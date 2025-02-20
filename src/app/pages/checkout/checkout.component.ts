@@ -4,14 +4,11 @@ import { CheckoutService } from '../../services/checkout.service';
 import { InvoiceService } from '../../services/invoice.service';
 import { CartProduct } from '../../interfaces/cart-product';
 import { CommonModule } from '@angular/common';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ToastModule],
-  providers: [MessageService],
+  imports: [CommonModule],
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
@@ -21,7 +18,6 @@ export class CheckoutComponent {
   totalAmount: number = 0;
   accessToken: string | null = null;
 
-  private messageService = inject(MessageService);
   private router = inject(Router);
   private checkoutService = inject(CheckoutService);
   private invoiceService = inject(InvoiceService);
@@ -70,17 +66,9 @@ export class CheckoutComponent {
     this.checkoutService.checkout(checkoutData, this.accessToken).subscribe({
       next: response => {
         console.log('Purchase completed:', response);
-        this.showSuccessToast();
       },
       error: err => console.error('Checkout error', err)
     });
   }
 
-  private showSuccessToast() {
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Purchase successful' });
-    setTimeout(() => {
-      localStorage.removeItem('cart');
-      this.router.navigate(['/home']);
-    }, 5000);
-  }
 }
